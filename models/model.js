@@ -11,7 +11,11 @@ let Schema = mongoose.Schema;
     emailAddress: {
       type: String,
       required: true,
-      match: /\S+@\S+\.\S+/
+      match: /\S+@\S+\.\S+/,
+      index: {
+        unique: true,
+        dropDups: true
+      }
     },
 
     password: {

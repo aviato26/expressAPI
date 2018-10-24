@@ -21,22 +21,21 @@ const app = express();
 
   db.once('open', () => {
     console.log('db connection was successful');
-    users.find({}, (err, data) => {
+    reviews.find({}, (err, data) => {
       console.log(data)
     })
   })
 
   app.use('/', (req, res) => {
-    let dude = new users({
-      fullName: 'sam',
-      emailAddress: 'blah@blah.com',
-      password: 'guest'
+    /*let rev = new reviews({
+      rating: 5
     })
-    dude.save((err) => {
+    rev.save((err) => {
       if(err){
         console.log(err)
       }
-    })
+    })*/
+    reviews.find({}, (err, data) => console.log(data))
   });
 
 // set our port

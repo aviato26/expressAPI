@@ -5,12 +5,14 @@ const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const users = require('../models/model.js');
+const courses = require('../models/course.js');
+const reviews = require('../models/review.js');
 const router = require('../routes/routes');
 const app = express();
 
 // connect mongoose to mongodb
   mongoose.connect('mongodb://localhost:27017/course-api');
-/*
+
   let db = mongoose.connection;
 
   db.on('error', (err) => {
@@ -23,10 +25,17 @@ const app = express();
       console.log(data)
     })
   })
-*/
+
   app.use('/', (req, res) => {
-    users.find({}, (err, data) => {
-      console.log(data)
+    let dude = new users({
+      fullName: 'sam',
+      emailAddress: 'blah@blah.com',
+      password: 'guest'
+    })
+    dude.save((err) => {
+      if(err){
+        console.log(err)
+      }
     })
   });
 

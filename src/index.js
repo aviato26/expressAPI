@@ -21,22 +21,7 @@ const app = express();
 
   db.once('open', () => {
     console.log('db connection was successful');
-    reviews.find({}, (err, data) => {
-      console.log(data)
-    })
   })
-
-  app.use('/', (req, res) => {
-    /*let rev = new reviews({
-      rating: 5
-    })
-    rev.save((err) => {
-      if(err){
-        console.log(err)
-      }
-    })*/
-    reviews.find({}, (err, data) => console.log(data))
-  });
 
 // set our port
 app.set('port', process.env.PORT || 5000);
@@ -45,6 +30,9 @@ app.set('port', process.env.PORT || 5000);
 app.use(morgan('dev'));
 
 // TODO add additional routes here
+app.get('/api/users', (req, res) => {
+  users.find({}, (err, data) => console.log(data))
+})
 
 // send a friendly greeting for the root route
 /*

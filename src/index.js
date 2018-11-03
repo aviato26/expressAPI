@@ -8,6 +8,8 @@ const users = require('../models/model.js');
 const courses = require('../models/course.js');
 const reviews = require('../models/review.js');
 const router = require('../routes/routes');
+const parser = require('body-parser');
+const auth = require('basic-auth');
 const app = express();
 
 // connect mongoose to mongodb
@@ -23,6 +25,8 @@ const app = express();
     console.log('db connection was successful');
   })
 
+app.use(parser())
+
 // set our port
 app.set('port', process.env.PORT || 5000);
 
@@ -30,8 +34,28 @@ app.set('port', process.env.PORT || 5000);
 app.use(morgan('dev'));
 
 // TODO add additional routes here
-app.get('/api/users', (req, res) => {
-  users.find({}, (err, data) => console.log(data))
+app.post('/api/users', (req, res) => {
+
+})
+
+app.get('/api/users', (req, res, next) => {
+  if(auth(req).name && auth(req).pass){
+    users.authenticate(auth(req).name, auth(req).pass, (err, user) => {
+      if(err || !user){
+        let err = new Error('wrong email or password');
+        err.status = 401;
+        return next(err)
+      }
+      else {
+        req.session.userId = users._id;
+        return res.redirect('/');
+      }
+    })
+  } else {
+    let err = new Error('Email and password are required');
+    err.status = 401;
+    return next(err)
+  }
 })
 
 // send a friendly greeting for the root route

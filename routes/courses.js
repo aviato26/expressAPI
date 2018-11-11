@@ -1,13 +1,16 @@
 
 'use strict';
 
-const express = require('express');
-const mongoose = require('mongoose');
+//const user = require('../models/model.js');
 const courses = require('../models/course');
-//const user = require('../models/model.js')
+const mongoose = require('mongoose');
+const express = require('express');
+const parser = require('body-parser');
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.use(parser.json())
+
+router.get('/api/courses', (req, res) => {
   courses.find({}, (err, data) => {
     if(err){
       throw err
@@ -23,14 +26,15 @@ router.get('/', (req, res) => {
   })
 })
 
-router.get('/api/courses/:id', (req, res) => {
+router.get('/api/courses/:id', (req, res, next) => {
   courses.findById(req.params.id)
-    .populate('ser')
+    //.populate('User')
+    .populate('Reviews')
     .exec((err, data) => {
       if(err){
-        throw err
+        return next(err)
       } else {
-        res.send(data)
+        res.send(data.toJSON({virtuals: true}))
       }
     })
   })

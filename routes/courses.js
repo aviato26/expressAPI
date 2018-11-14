@@ -1,16 +1,13 @@
 
 'use strict';
 
-//const user = require('../models/model.js');
 const courses = require('../models/course');
 const mongoose = require('mongoose');
 const express = require('express');
 const parser = require('body-parser');
 const router = express.Router();
 
-router.use(parser.json())
-
-router.get('/api/courses', (req, res) => {
+router.get('/', (req, res) => {
   courses.find({}, (err, data) => {
     if(err){
       throw err
@@ -28,7 +25,6 @@ router.get('/api/courses', (req, res) => {
 
 router.get('/api/courses/:id', (req, res, next) => {
   courses.findById(req.params.id)
-    //.populate('User')
     .populate('Reviews')
     .exec((err, data) => {
       if(err){
@@ -38,6 +34,31 @@ router.get('/api/courses/:id', (req, res, next) => {
       }
     })
   })
+
+router.post('/api/courses', (req, res) => {
+  courses.create({
+    title: req.body.title,
+    description: req.body.description,
+    steps: req.body.steps.map(c => c)
+  }, (err) => {
+      if(err){
+        throw err
+      } else {
+        return res.location('/api/courses').status(201).json()
+      };
+  })
+})
+
+router.put('/api/courses/:id', function(req, res){
+  courses.findByIdAndUpdate(req.params.id,{$set: req.body},{new: true},
+    (err) => {
+      if(err){
+        return err
+      }
+      res.send().status(204)
+    }
+  )
+})
 
 
 module.exports = router;

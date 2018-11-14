@@ -14,7 +14,7 @@ let Course = new Schema({
 
   title: {
     type: String,
-    required: true
+    required: [true, 'not a valid input']
   },
 
   description: {

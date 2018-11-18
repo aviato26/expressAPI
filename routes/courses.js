@@ -7,10 +7,10 @@ const express = require('express');
 const parser = require('body-parser');
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/api/courses', (req, res, next) => {
   courses.find({}, (err, data) => {
     if(err){
-      throw err
+      return next(err)
     } else {
         res.send(data.map(c => {
           return {
@@ -35,14 +35,14 @@ router.get('/api/courses/:id', (req, res, next) => {
     })
   })
 
-router.post('/api/courses', (req, res) => {
+router.post('/api/courses', (req, res, next) => {
   courses.create({
     title: req.body.title,
     description: req.body.description,
     steps: req.body.steps.map(c => c)
   }, (err) => {
       if(err){
-        throw err
+        return next(err)
       } else {
         return res.location('/api/courses').status(201).json()
       };
@@ -50,12 +50,12 @@ router.post('/api/courses', (req, res) => {
 })
 
 router.put('/api/courses/:id', function(req, res){
-  courses.findByIdAndUpdate(req.params.id,{$set: req.body},{new: true},
+  courses.findOneAndUpdate({_id:req.params.id},{$set: req.body},
     (err) => {
       if(err){
-        return err
+        throw err
       }
-      res.send().status(204)
+      res.send().status(204).json()
     }
   )
 })

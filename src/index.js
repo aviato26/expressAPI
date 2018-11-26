@@ -8,9 +8,13 @@ const users = require('../models/model.js');
 const courses = require('../models/course.js');
 const reviews = require('../models/review.js');
 const courseRoute = require('../routes/courses.js');
+<<<<<<< HEAD
 const userRoute = require('../routes/usersRoutes.js');
+=======
+const userRoute = require('../routes/user.js');
+>>>>>>> 65b065e0ff513641b944818d1ed2b23aff2e8c15
 const parser = require('body-parser');
-const auth = require('basic-auth');
+const authenticate = require('../authentication/authenticate.js');
 const session = require('express-session');
 const app = express();
 
@@ -40,25 +44,58 @@ app.set('port', process.env.PORT || 5000);
 // morgan gives us http request logging
 app.use(morgan('dev'));
 
+<<<<<<< HEAD
 // TODO add additional routes here
+=======
+app.use('/', userRoute);
+
+app.post('/api/users', (req, res, next) => {
+  /*let newUser = new users({
+    fullName: req.body.fullName,
+    emailAddress: req.body.emailAddress,
+    password: req.body.password
+  })
+
+  newUser.save((err) => {
+    if(err){
+      throw err
+    } else{
+      res.location('/').status(201).json()
+    }
+  })
+*/
+  users.create({
+      fullName: req.body.fullName,
+      emailAddress: req.body.emailAddress,
+      password: req.body.password
+    }, (err) => {
+        if(err){
+          throw err
+        } else {
+          return res.location('/').status(201).json();
+        };
+    })/*
+    users.deleteMany({emailAddress: req.body.emailAddress}, (err, data) => {
+      if(err){
+        throw err
+      } else {
+        res.send(data)
+      }
+    })
+    users.find({emailAddress: req.body.emailAddress}, (err, data) => {
+      if(err){
+        throw err
+      } else {
+        res.send(data)
+      }
+    })*/
+    //users.find().then(data => res.send(data))
+})
+>>>>>>> 65b065e0ff513641b944818d1ed2b23aff2e8c15
 
 app.use('/', userRoute);
 app.use('/', courseRoute);
 
-// send a friendly greeting for the root route
-/*
-app.get('/', (req, res) => {
-  res.json({
-    message: 'Welcome to the Course Review API'
-  });
-});
-*/
-// uncomment this route in order to test the global error handler
-// app.get('/error', function (req, res) {
-//   throw new Error('Test error');
-// });
-
-// send 404 if no other route matched
 app.use((req, res) => {
   res.status(404).json({
     message: 'Route Not Found'

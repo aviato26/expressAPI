@@ -2,7 +2,7 @@
 'use strict';
 
 const auth = require('basic-auth');
-const users = require('../models/model.js')
+const users = require('../models/model.js');
 
 let authenticate = (req, res, next) => {
   if(auth(req)){

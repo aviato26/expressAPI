@@ -8,7 +8,7 @@ const parser = require('body-parser');
 const mid = require('../authentication/authenticate.js');
 const router = express.Router();
 
-router.get('/api/courses', (req, res, next) => {
+router.get('/', (req, res, next) => {
   courses.find({}, (err, data) => {
     if(err){
       return next(err)

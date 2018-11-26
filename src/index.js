@@ -8,6 +8,7 @@ const users = require('../models/model.js');
 const courses = require('../models/course.js');
 const reviews = require('../models/review.js');
 const courseRoute = require('../routes/courses.js');
+const userRoute = require('../routes/usersRoutes.js');
 const parser = require('body-parser');
 const auth = require('basic-auth');
 const session = require('express-session');
@@ -40,39 +41,8 @@ app.set('port', process.env.PORT || 5000);
 app.use(morgan('dev'));
 
 // TODO add additional routes here
-app.post('/api/users', (req, res) => {
-    users.create({
-      fullName: req.body.fullName,
-      emailAddress: req.body.emailAddress,
-      password: req.body.password
-    }, (err) => {
-        if(err){
-          throw err
-        } else {
-          return res.location('/').status(201).json()
-        };
-    })
-})
 
-app.get('/api/users', (req, res, next) => {
-  if(auth(req).name && auth(req).pass){
-    users.authenticate(auth(req).name, auth(req).pass, (err, user) => {
-      if(err || !user){
-        let err = new Error('wrong email or password');
-        err.status = 401;
-        return next(err)
-      }
-      else {
-        res.send(user)
-      }
-    })
-  } else {
-    let err = new Error('Email and password are required');
-    err.status = 401;
-    return next(err)
-  }
-})
-
+app.use('/', userRoute);
 app.use('/', courseRoute);
 
 // send a friendly greeting for the root route

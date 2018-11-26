@@ -5,6 +5,7 @@ const courses = require('../models/course');
 const mongoose = require('mongoose');
 const express = require('express');
 const parser = require('body-parser');
+const mid = require('../authentication/authenticate.js');
 const router = express.Router();
 
 router.get('/api/courses', (req, res, next) => {
@@ -26,6 +27,7 @@ router.get('/api/courses', (req, res, next) => {
 router.get('/api/courses/:id', (req, res, next) => {
   courses.findById(req.params.id)
     .populate('Reviews')
+    .populate('User')
     .exec((err, data) => {
       if(err){
         return next(err)
@@ -35,18 +37,19 @@ router.get('/api/courses/:id', (req, res, next) => {
     })
   })
 
-router.post('/api/courses', (req, res, next) => {
-  courses.create({
+router.post('/api/courses', mid, (req, res, next) => {
+  /*courses.create({
     title: req.body.title,
     description: req.body.description,
     steps: req.body.steps.map(c => c)
   }, (err) => {
       if(err){
+        let err = new Error('please make sure the required fields are filled out')
         return next(err)
       } else {
         return res.location('/api/courses').status(201).json()
       };
-  })
+  })*/
 })
 
 router.put('/api/courses/:id', function(req, res){

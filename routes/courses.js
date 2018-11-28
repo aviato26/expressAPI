@@ -49,7 +49,7 @@ router.post('/api/courses', mid, (req, res, next) => {
       } else {
         return res.location('/api/courses').status(201).json()
       };
-  })*/
+  })*/ res.send('yo')
 })
 
 router.put('/api/courses/:id', function(req, res){

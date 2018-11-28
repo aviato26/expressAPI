@@ -1,20 +1,20 @@
 
 'use strict';
 
-const auth = require('basic-auth');
+const b_auth = require('basic-auth');
 const users = require('../models/model.js');
 
-let authenticate = (req, res, next) => {
-  if(auth(req)){
-    users.authenticate(auth(req).name, auth(req).pass, (err, user) => {
+let auth = (req, res, next) => {
+  if(b_auth(req).name && b_auth(req).pass){
+    users.authenticate(b_auth(req).name, b_auth(req).pass, (err, user) => {
       if(err || !user){
         let err = new Error('wrong email or password');
         err.status = 401;
         return next(err)
       }
       else {
-        req.session.userId = users._id;
-        return next(user)
+        res.send('from the mid');
+        return next();
       }
     })
   } else {
@@ -24,4 +24,4 @@ let authenticate = (req, res, next) => {
   }
 }
 
-module.exports = authenticate;
+module.exports = auth;

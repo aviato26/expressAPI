@@ -8,11 +8,7 @@ const users = require('../models/model.js');
 const courses = require('../models/course.js');
 const reviews = require('../models/review.js');
 const courseRoute = require('../routes/courses.js');
-<<<<<<< HEAD
 const userRoute = require('../routes/usersRoutes.js');
-=======
-const userRoute = require('../routes/user.js');
->>>>>>> 65b065e0ff513641b944818d1ed2b23aff2e8c15
 const parser = require('body-parser');
 const authenticate = require('../authentication/authenticate.js');
 const session = require('express-session');
@@ -44,54 +40,7 @@ app.set('port', process.env.PORT || 5000);
 // morgan gives us http request logging
 app.use(morgan('dev'));
 
-<<<<<<< HEAD
 // TODO add additional routes here
-=======
-app.use('/', userRoute);
-
-app.post('/api/users', (req, res, next) => {
-  /*let newUser = new users({
-    fullName: req.body.fullName,
-    emailAddress: req.body.emailAddress,
-    password: req.body.password
-  })
-
-  newUser.save((err) => {
-    if(err){
-      throw err
-    } else{
-      res.location('/').status(201).json()
-    }
-  })
-*/
-  users.create({
-      fullName: req.body.fullName,
-      emailAddress: req.body.emailAddress,
-      password: req.body.password
-    }, (err) => {
-        if(err){
-          throw err
-        } else {
-          return res.location('/').status(201).json();
-        };
-    })/*
-    users.deleteMany({emailAddress: req.body.emailAddress}, (err, data) => {
-      if(err){
-        throw err
-      } else {
-        res.send(data)
-      }
-    })
-    users.find({emailAddress: req.body.emailAddress}, (err, data) => {
-      if(err){
-        throw err
-      } else {
-        res.send(data)
-      }
-    })*/
-    //users.find().then(data => res.send(data))
-})
->>>>>>> 65b065e0ff513641b944818d1ed2b23aff2e8c15
 
 app.use('/', userRoute);
 app.use('/', courseRoute);

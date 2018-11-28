@@ -6,9 +6,29 @@ const mongoose = require('mongoose');
 const users = require('../models/model.js');
 const courses = require('../models/course.js');
 const parser = require('body-parser');
-const auth = require('basic-auth');
+const b_auth = require('basic-auth');
 const middleware = require('../authentication/authenticate.js');
 const router = express.Router();
+
+router.get('/api/users', (req, res, next) => {
+  if(b_auth(req).name && b_auth(req).pass){
+    users.authenticate(b_auth(req).name, b_auth(req).pass, (err, user) => {
+      if(err || !user){
+        let err = new Error('wrong email or password');
+        err.status = 401;
+        return next(err)
+      }
+      else {
+        res.send('from the mid');
+        return next(user);
+      }
+    })
+  } else {
+    let err = new Error('Email and password are required');
+    err.status = 401;
+    return next(err)
+  }
+})
 
 router.post('/api/users', (req, res, next) => {
     users.create({
@@ -22,25 +42,6 @@ router.post('/api/users', (req, res, next) => {
           return res.location('/').status(201).json()
         };
     })
-})
-
-router.get('/api/users', (req, res, next) => {
-  if(auth(req)){
-    users.authenticate(auth(req).name, auth(req).pass, (err, user) => {
-      if(err || !user){
-        let err = new Error('wrong email or password');
-        err.status = 401;
-        return next(err)
-      }
-      else {
-        res.send(user)
-      }
-    })
-  } else {
-    let err = new Error('Email and password are required');
-    err.status = 401;
-    return next(err)
-  }
 })
 
 module.exports = router;

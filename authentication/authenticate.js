@@ -1,19 +1,20 @@
 
 'use strict';
 
-const b_auth = require('basic-auth');
 const users = require('../models/model.js');
+const b_auth = require('basic-auth');
+const sessions = require('express-session');
 
 let auth = (req, res, next) => {
-  if(b_auth(req).name && b_auth(req).pass){
-    users.authenticate(b_auth(req).name, b_auth(req).pass, (err, user) => {
+  if(req.body.emailAddress && req.body.password){
+    users.authenticate(req.body.emailAddress, req.body.password, (err, user) => {
       if(err || !user){
         let err = new Error('wrong email or password');
         err.status = 401;
         return next(err)
       }
       else {
-        res.send('from the mid');
+        res.send('asdf')
         return next();
       }
     })
@@ -23,5 +24,6 @@ let auth = (req, res, next) => {
     return next(err)
   }
 }
+
 
 module.exports = auth;

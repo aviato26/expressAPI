@@ -18,6 +18,7 @@ let bcrypt = require('bcrypt');
         dropDups: true
       }
     },
+
     password: {
       type: String,
       required: true

@@ -6,18 +6,20 @@ const mongoose = require('mongoose');
 const users = require('../models/model.js');
 const courses = require('../models/course.js');
 const parser = require('body-parser');
-const b_auth = require('basic-auth');
 const middleware = require('../authentication/authenticate.js');
-const bcrypt = require('bcrypt');
 const router = express.Router();
 
 router.use(parser())
 
-router.get('/api/users', (req, res, next) => {
-  res.send(req.body)
+// returns user if validation and authentication are true
+
+router.get('/api/users', middleware, (req, res, next) => {
+  res.send(req.user)
 })
 
-router.post('/api/users', middleware, (req, res, next) => {
+// will post a new user if all required fields are filled out
+
+router.post('/api/users', (req, res, next) => {
     users.create({
       fullName: req.body.fullName,
       emailAddress: req.body.emailAddress,

@@ -21,7 +21,8 @@ let Review = new Schema({
     validate: {
       validator: (num) => {
         return (num >= 1 && num <= 5);
-      }
+      },
+      msg: 'num must be between 1 and 5'
     }
   },
   review: String

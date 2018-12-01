@@ -26,7 +26,7 @@ let bcrypt = require('bcrypt');
   })
 
   User.statics.authenticate = function(email, password, cb){
-    Users.find({emailAddress: email})
+    Users.findOne({emailAddress: email})
       .exec((err, user) => {
         if(err){
           return cb(err);

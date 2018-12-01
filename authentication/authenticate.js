@@ -3,18 +3,19 @@
 
 const users = require('../models/model.js');
 const b_auth = require('basic-auth');
-const sessions = require('express-session');
+
+// function to check if the req header has valid authorization credientials
 
 let auth = (req, res, next) => {
-  if(req.body.emailAddress && req.body.password){
-    users.authenticate(req.body.emailAddress, req.body.password, (err, user) => {
+  if(b_auth(req) && b_auth(req).name && b_auth(req).pass){
+    users.authenticate(b_auth(req).name, b_auth(req).pass, (err, user) => {
       if(err || !user){
         let err = new Error('wrong email or password');
         err.status = 401;
         return next(err)
       }
       else {
-        res.send('asdf')
+        req.user = user;
         return next();
       }
     })

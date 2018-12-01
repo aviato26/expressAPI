@@ -2,13 +2,17 @@
 'use strict';
 
 const courses = require('../models/course');
+const users = require('../models/model');
+const review = require('../models/review');
 const mongoose = require('mongoose');
 const express = require('express');
 const parser = require('body-parser');
 const mid = require('../authentication/authenticate.js');
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
+//route for returning all courses
+
+router.get('/api/courses', (req, res, next) => {
   courses.find({}, (err, data) => {
     if(err){
       return next(err)
@@ -24,10 +28,22 @@ router.get('/', (req, res, next) => {
   })
 })
 
+// route for returning specific course retrieved by the course id
+
 router.get('/api/courses/:id', (req, res, next) => {
   courses.findById(req.params.id)
-    .populate('Reviews')
-    .populate('User')
+    .populate({
+      path: 'user',
+      model: 'User'
+    })
+    .populate({
+      path: 'reviews',
+      model: 'Review',
+      populate: {
+        path: 'user',
+        model: 'User'
+      }
+    })
     .exec((err, data) => {
       if(err){
         return next(err)
@@ -37,30 +53,46 @@ router.get('/api/courses/:id', (req, res, next) => {
     })
   })
 
+// route for posting a new course
+
 router.post('/api/courses', mid, (req, res, next) => {
-  /*courses.create({
-    title: req.body.title,
-    description: req.body.description,
-    steps: req.body.steps.map(c => c)
-  }, (err) => {
+  courses.create(req.body, (err) => {
       if(err){
-        let err = new Error('please make sure the required fields are filled out')
+        let err = new Error('please make sure all the required fields are filled out')
         return next(err)
       } else {
         return res.location('/api/courses').status(201).json()
       };
-  })*/ res.send('yo')
+  })
 })
 
-router.put('/api/courses/:id', function(req, res){
-  courses.findOneAndUpdate({_id:req.params.id},{$set: req.body},
+//route for updating a current course
+
+router.put('/api/courses/:id', mid, (req, res, next) =>{
+  courses.updateOne({_id:req.params.id}, req.body,
     (err) => {
       if(err){
-        throw err
+        next(err)
+      } else {
+      res.status(204).json()
       }
-      res.send().status(204).json()
     }
   )
+})
+
+// route for posting a new review
+
+router.post('/api/courses/:id/reviews', mid, (req, res, next) => {
+  review.create({
+    rating: req.body.rating
+  }, (err) => {
+    if(err){
+      next(err)
+    }
+    else{
+      res.location('/api/courses/:id/reviews').status(201).json()
+    }
+  })
 })
 
 

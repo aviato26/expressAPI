@@ -1,7 +1,7 @@
 
 'use strict';
 
-const users = require('../models/model.js');
+const users = require('../models/user.js');
 const b_auth = require('basic-auth');
 
 // function to check if the req header has valid authorization credientials

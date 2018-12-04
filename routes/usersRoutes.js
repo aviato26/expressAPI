@@ -3,7 +3,7 @@
 
 const express = require('express');
 const mongoose = require('mongoose');
-const users = require('../models/model.js');
+const users = require('../models/user.js');
 const courses = require('../models/course.js');
 const parser = require('body-parser');
 const middleware = require('../authentication/authenticate.js');

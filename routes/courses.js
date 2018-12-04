@@ -2,7 +2,7 @@
 'use strict';
 
 const courses = require('../models/course');
-const users = require('../models/model');
+const users = require('../models/user');
 const review = require('../models/review');
 const mongoose = require('mongoose');
 const express = require('express');
@@ -85,15 +85,27 @@ router.put('/api/courses/:id', mid, (req, res, next) =>{
 router.post('/api/courses/:id/reviews', mid, (req, res, next) => {
   review.create({
     rating: req.body.rating
-  }, (err) => {
-    if(err){
-      next(err)
-    }
-    else{
-      res.location('/api/courses/:id/reviews').status(201).json()
-    }
+  }, (err, new_review) => {
+      if(err){
+        next(err)
+      } else {
+        courses.findById({_id: req.params.id}, (err, foundCourse) => {
+          if(err){
+            next(err)
+          } else {
+            foundCourse.reviews.push(new_review);
+            foundCourse.save((err, data) => {
+              if(err){
+                next(err)
+              } else {
+                res.location('/api/courses/:id/reviews').status(201).json()
+              }
+            })
+          }
+        })
+      }
+    })
   })
-})
 
 
 module.exports = router;

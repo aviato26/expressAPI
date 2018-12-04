@@ -3,7 +3,7 @@
 
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
-let User = require('./model.js');
+let User = require('./user.js');
 
 
 let Review = new Schema({
